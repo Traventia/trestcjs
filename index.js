@@ -41,4 +41,4 @@
  * }
  */
 'use strict'
-module.exports = require('./lib/trestcjs.js');
+module.exports = require('./lib/trestc');
