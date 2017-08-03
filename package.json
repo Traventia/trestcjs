@@ -1,0 +1,13 @@
+{
+  "name": "trestcjs",
+  "version": "0.0.0",
+  "description": "Simple Rest client for node",
+  "author": "David",
+  "main": "index.js",
+  "scripts": {},
+  "dependencies": {
+    "iconv-lite"    : "0.4.18",
+    "js2xmlparser"  : "3.0.0",
+    "xml2js"        : "0.4.17"
+  }
+}
