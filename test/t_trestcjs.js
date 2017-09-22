@@ -66,7 +66,7 @@ http.createServer(function (request, res) {
 	  	res.end();
   	});
 }).listen(port,function(err){
-
+	
 	//Subscribe a handler
 	trestc.changeByDefaultConfiguration(true);
 	trestc.subscribeLogHandler(function(logOptions,request,request_timestamp,response,response_timestamp){

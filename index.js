@@ -1,16 +1,16 @@
 /**
  * This module wrapp function to connect to external apis using rest methods GET and POST
  * Allow several features and configurations in each request like gog,data parsing, etc.
- * - http(method,host,port,path,options,data,pathparams,callback)
- * - https(hethod,host,port,path,options,data,pathparams,callback)
- * - http_post(host,port,path,options,data,pathparams,callback)
- * - http_get(host,port,path,options,data,pathparams,callback)
- * - http_put(host,port,path,options,data,pathparams,callback)
- * - http_delete(host,port,path,options,data,pathparams,callback)
- * - https_post(host,port,path,options,data,pathparams,callback)
- * - https_get(host,port,path,options,data,pathparams,callback)
- * - https_put(host,port,path,options,data,pathparams,callback)
- * - https_delete(host,port,path,options,data,pathparams,callback)
+ * - http(method,host,port,path,params,data,options,callback)
+ * - https(hethod,host,port,path,params,data,options,callback)
+ * - http_post(host,port,path,params,data,options,callback)
+ * - http_get(host,port,path,params,data,options,callback)
+ * - http_put(host,port,path,params,data,options,callback)
+ * - http_delete(host,port,path,params,data,options,callback)
+ * - https_post(host,port,path,params,data,options,callback)
+ * - https_get(host,port,path,params,data,options,callback)
+ * - https_put(host,port,path,params,data,options,callback)
+ * - https_delete(host,port,path,params,data,options,callback)
  *
  * OPTIONS IN REQUEST:
  * {
