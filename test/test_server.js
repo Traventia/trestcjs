@@ -62,7 +62,13 @@ exports.createServerTest = function(port,callback){
 					break;					
 				case 'err503':
 					_err503(request,body,res);
-					break;										
+					break;	
+				case 'moreinfo':
+					_moreinfo(request,body,res);
+					break;
+				case 'log':
+					_logTest(request,body,res);
+					break;													
 
 			}
 	  	});
@@ -222,3 +228,29 @@ var _err503  = function(request,body,res){
 	}
   	res.end();
 };
+
+
+var _moreinfo  = function(request,body,res){
+	//_showInfo(request,body);
+	res.statusCode = 200;
+	if (request.method != 'GET' || request.url !== '/path/allinfo' ){
+		res.statusCode = 500;
+	}
+
+	var respuesta = {main:{node1:'value',complex:{n1:'v1post',n2:'v2post'}}};
+	
+	res.setHeader('content-type', 'application/json');
+	res.setHeader('inventado','me lo invento');
+	res.write(JSON.stringify(respuesta)); //write a response to the client
+  	res.end();
+};
+
+var _logTest  = function(request,body,res){
+	//_showInfo(request,body);
+	res.statusCode = 200;
+	var respuesta = {main:{node1:'value',complex:{n1:'v1post',n2:'v2post'}}};
+	res.setHeader('content-type', 'application/json');
+	res.write(JSON.stringify(respuesta)); //write a response to the client
+  	res.end();
+};
+

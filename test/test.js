@@ -216,4 +216,51 @@ describe('HTTP', function() {
 			});
 		});	
 	});
+
+	describe('Moreinfo data', function() {
+		// make a delete without paarameters nor data
+		it('Request info redeived', function(done) {
+			var options = {timeout:360000,headers:{SOAPAction:'kakadevaka'},resdecod:{type:'json'}};
+			testSever.selectTest('moreinfo');
+			trestc.http_get('127.0.0.1',port,'/path/allinfo',null,options,function(err,res,resInfo){
+				should.not.exist(err);
+				should.exist(res);
+				should.exist(resInfo);
+				resInfo.statusCode.should.equal(200)
+				resInfo.headers.inventado.should.equal('me lo invento')
+				done();
+			});
+		});
+	});
+
+	describe('Log features', function() {
+		// make a delete without paarameters nor data
+		it('test', function(done) {
+			var options = {timeout:360000,headers:{SOAPAction:'kakadevaka'},reqdecod:{type:'json'},resdecod:{type:'json'}};
+			testSever.selectTest('log');
+			var data = 'B';
+			trestc.changeByDefaultConfiguration(true);
+			trestc.subscribeLogHandler(function(a,b,c,d){
+				/*console.log('****');
+				console.log(a);
+				console.log('****');
+				console.log(b);
+				console.log('****');
+				console.log(c);
+				console.log('****');
+				console.log(d);
+				console.log('****');*/
+			});
+			trestc.http_post('127.0.0.1',port,'/path/allinfo',null,data,options,function(err,res,resInfo){
+				//console.log(err,res,resInfo);
+				done();
+				/*should.not.exist(err);
+				should.exist(res);
+				should.exist(resInfo);
+				resInfo.statusCode.should.equal(200)
+				resInfo.headers.inventado.should.equal('me lo invento')
+				done();*/
+			});
+		});
+	});
 });
