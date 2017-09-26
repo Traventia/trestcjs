@@ -1,6 +1,6 @@
 {
   "name": "trestcjs",
-  "version": "0.9.0",
+  "version": "1.0.0",
   "description": "Simple Rest client for node",
   "author": "drobledom",
   "main": "index.js",

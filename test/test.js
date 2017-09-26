@@ -24,7 +24,7 @@ describe('HTTP', function() {
 			trestc.http_get('127.0.0.1',port,'',{},options,function(err,res){
 				should.exist(err);
 				err.should.be.a('object');
-				err.error.code.should.equal(3)
+				err.code.should.equal(3)
 				done();
 			});
 		});
@@ -35,7 +35,7 @@ describe('HTTP', function() {
 			trestc.http_get('127.0.0.1',55000,'',{},options,function(err,res){
 				should.exist(err);
 				err.should.be.a('object');
-				err.error.code.should.equal(2)
+				err.code.should.equal(2)
 				done();
 			});
 		});
@@ -46,7 +46,7 @@ describe('HTTP', function() {
 			trestc.http('MELOINVENTO','127.0.0.1',port,'',{},null,options,function(err,res){
 				should.exist(err);
 				err.should.be.a('object');
-				err.error.code.should.equal(5)
+				err.code.should.equal(5)
 				done();
 			});
 		});		
@@ -171,7 +171,7 @@ describe('HTTP', function() {
 			trestc.http_delete('127.0.0.1',port,'/path/redirect/me/forever',null,null,options,function(err,res){
 				should.exist(err);
 				err.should.be.a('object');
-				err.error.code.should.equal(4)
+				err.code.should.equal(4)
 				done();
 			});
 		});
@@ -183,7 +183,7 @@ describe('HTTP', function() {
 			trestc.http_post('127.0.0.1',port,'/path/redirect/me',null,null,options,function(err,res){
 				should.exist(err);
 				err.should.be.a('object');
-				err.error.code.should.equal(12)
+				err.code.should.equal(12)
 				done();
 			});
 		});		
@@ -197,7 +197,7 @@ describe('HTTP', function() {
 			trestc.http_get('127.0.0.1',port,'/path/no/exit',null,options,function(err,res){
 				should.exist(err);
 				err.should.be.a('object');
-				err.error.code.should.equal(10)
+				err.code.should.equal(10)
 				err.statusCode.should.equal(404);
 				done();
 			});
@@ -210,7 +210,7 @@ describe('HTTP', function() {
 			trestc.http_get('127.0.0.1',port,'/path/no/exit',null,options,function(err,res){
 				should.exist(err);
 				err.should.be.a('object');
-				err.error.code.should.equal(10)
+				err.code.should.equal(10)
 				err.statusCode.should.equal(503);
 				done();
 			});
@@ -220,14 +220,27 @@ describe('HTTP', function() {
 	describe('Moreinfo data', function() {
 		// make a delete without paarameters nor data
 		it('Request info redeived', function(done) {
-			var options = {timeout:360000,headers:{SOAPAction:'kakadevaka'},resdecod:{type:'json'}};
+			var options = {timeout:360000,headers:{SOAPAction:'kakadevaka'},resdecod:{type:'json'},trace:true};
 			testSever.selectTest('moreinfo');
-			trestc.http_get('127.0.0.1',port,'/path/allinfo',null,options,function(err,res,resInfo){
+			trestc.http_get('127.0.0.1',port,'/path/allinfo',null,options,function(err,res,statusCode,trace){
 				should.not.exist(err);
 				should.exist(res);
-				should.exist(resInfo);
-				resInfo.statusCode.should.equal(200)
-				resInfo.headers.inventado.should.equal('me lo invento')
+				should.exist(trace);
+				statusCode.should.equal(200)
+				trace.res.headers.inventado.should.equal('me lo invento')
+				done();
+			});
+		});
+
+		// make a delete without paarameters nor data
+		it('Request with basic auth', function(done) {
+			var options = {timeout:360000,trace:true,auth:{type:'basic',username:'david',password:'passwo'}};
+			testSever.selectTest('basic_auth');
+			trestc.http_get('127.0.0.1',port,'/path/auth',null,options,function(err,res,statusCode,trace){
+				should.not.exist(err);
+				should.exist(res);
+				should.exist(trace);
+				statusCode.should.equal(200)
 				done();
 			});
 		});
@@ -236,30 +249,70 @@ describe('HTTP', function() {
 	describe('Log features', function() {
 		// make a delete without paarameters nor data
 		it('test', function(done) {
-			var options = {timeout:360000,headers:{SOAPAction:'kakadevaka'},reqdecod:{type:'json'},resdecod:{type:'json'}};
+			var options = {timeout:360000,headers:{SOAPAction:'kakadevaka'},reqdecod:{type:'json'},resdecod:{type:'json'},log:{tag:'ESTOESTAG'}};
 			testSever.selectTest('log');
 			var data = 'B';
-			trestc.changeByDefaultConfiguration(true);
-			trestc.subscribeLogHandler(function(a,b,c,d){
-				/*console.log('****');
-				console.log(a);
-				console.log('****');
-				console.log(b);
-				console.log('****');
-				console.log(c);
-				console.log('****');
-				console.log(d);
-				console.log('****');*/
+			var logReqOk = false;
+			var logResOk = false;
+			trestc.on('requestStart',function(tag,trace){
+				tag.should.equal('ESTOESTAG');
+				trace.protocol.should.equal('http');
+				logReqOk = true;
 			});
-			trestc.http_post('127.0.0.1',port,'/path/allinfo',null,data,options,function(err,res,resInfo){
-				//console.log(err,res,resInfo);
-				done();
-				/*should.not.exist(err);
+			trestc.on('requestEnd',function(tag,trace){
+				tag.should.equal('ESTOESTAG');
+				trace.statusCode.should.equal(200);
+				logResOk = true;
+			});
+			trestc.http_post('127.0.0.1',port,'/path/allinfo',null,data,options,function(err,res,statusCode,trace){
+				should.not.exist(err);
+				statusCode.should.equal(200)
+				should.exist(trace);
+				setTimeout(function(){
+					logReqOk.should.equal(true);
+					logResOk.should.equal(true);
+					done();	
+				},100)
+			});
+		});
+	});
+
+	describe('Test content-type encde/decode', function() {
+		// check a standar get request
+		it('Should make a get request with url parameters and receive and process a json', function(done) {
+			var options = {timeout:360000,headers:{'content-type':'application/json'}};
+			testSever.selectTest('post_auto_json');
+			var resultExpected = JSON.stringify({main:{node1:'value',complex:{n1:'paj1',n2:'paj2'}}})
+			var data = {
+				name:'foo',password:'bar'
+			};
+			trestc.http_post('127.0.0.1',port,'/path/post',{p1:1,p2:2},data,options,function(err,res){
+				should.not.exist(err);
 				should.exist(res);
-				should.exist(resInfo);
-				resInfo.statusCode.should.equal(200)
-				resInfo.headers.inventado.should.equal('me lo invento')
-				done();*/
+				resJson = JSON.stringify(res);
+				resJson.should.equal(resultExpected);
+				done();
+			});
+		});
+
+
+		it('Should make a put request with xml parameters and receive and process a xml', function(done) {
+			var options = {timeout:360000,headers:{'content-type':'text/xml'}};
+			testSever.selectTest('put_auto_xml');
+			var resultExpected = JSON.stringify({ trestcjs: { name: 'foo', password: 'bar', complex: { data: ["1","2","3"] } } })
+			var data = {
+				name:'foo',
+				password:'bar',
+				complex : {
+					data : [1,2,3]
+				}
+			};
+			trestc.http_put('127.0.0.1',port,'/path/put',{p1:1,p2:4},data,options,function(err,res){
+				should.not.exist(err);
+				should.exist(res);
+				resJson = JSON.stringify(res);
+				resJson.should.equal(resultExpected);
+				done();
 			});
 		});
 	});

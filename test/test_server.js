@@ -68,7 +68,16 @@ exports.createServerTest = function(port,callback){
 					break;
 				case 'log':
 					_logTest(request,body,res);
-					break;													
+					break;	
+				case 'post_auto_json':
+					_postAutoJson(request,body,res);
+					break;			
+				case 'put_auto_xml':
+					_putAutoJson(request,body,res);
+					break;		
+				case 'basic_auth':
+					_basicAuth(request,body,res);
+					break;							
 
 			}
 	  	});
@@ -254,3 +263,50 @@ var _logTest  = function(request,body,res){
   	res.end();
 };
 
+
+var _postAutoJson  = function(request,body,res){
+	//_showInfo(request,body);
+	res.statusCode = 200;
+	if (request.method != 'POST' || request.url !== '/path/post?p1=1&p2=2' ){
+		res.statusCode = 500;
+	}
+
+	var respuesta = {main:{node1:'value',complex:{n1:'paj1',n2:'paj2'}}};
+	res.setHeader('content-type', 'application/json');
+	res.write(JSON.stringify(respuesta)); //write a response to the client
+  	res.end();
+};
+
+//Normal put test
+var _putAutoJson = function(request,body,res){
+	//_showInfo(request,body);
+	res.statusCode = 200;
+	if (request.method != 'PUT' || request.url !== '/path/put?p1=1&p2=4' ){
+		res.statusCode = 500;
+	}
+	var body_target ="<?xmlversion='1.0'?><trestcjs><name>foo</name><password>bar</password><complex><data>1</data><data>2</data><data>3</data></complex></trestcjs>";
+	tbody = body.replace(/(\r\n|\n|\r)/gm,"");
+	tbody = tbody.replace(/ /gm,"");
+	tbody = tbody.replace(/(\t)/gm,"");
+
+	if (request.method != 'PUT' || request.url !== '/path/put?p1=1&p2=4' || request.headers['content-type'] != 'text/xml' || tbody != body_target){
+		res.statusCode = 500;
+	}
+	res.setHeader('content-type', 'text/xml');
+	res.write(body); //write a response to the client
+  	res.end();
+}
+
+var _basicAuth = function(request,body,res){
+	//_showInfo(request,body);
+	res.statusCode = 200;
+
+	if (request.method != 'GET' || request.url !== '/path/auth' || typeof request.headers.authorization == 'undefined' || request.headers.authorization.trim() != 'Basic ZGF2aWQ6cGFzc3dv' ){
+		res.statusCode = 500;
+	}
+
+	var respuesta = {main:{node1:'value',complex:{n1:'auth1',n2:'auth2'}}};
+	res.setHeader('content-type', 'application/json');
+	res.write(JSON.stringify(respuesta)); //write a response to the client
+  	res.end();
+};
