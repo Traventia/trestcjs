@@ -280,7 +280,7 @@ describe('HTTP', function() {
 	describe('Test content-type encde/decode', function() {
 		// check a standar get request
 		it('Should make a get request with url parameters and receive and process a json', function(done) {
-			var options = {timeout:360000,headers:{'content-type':'application/json'}};
+			var options = {timeout:360000,headers:{'content-type':'application/json'},encoding : 'latin1',};
 			testSever.selectTest('post_auto_json');
 			var resultExpected = JSON.stringify({main:{node1:'value',complex:{n1:'paj1',n2:'paj2'}}})
 			var data = {
