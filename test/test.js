@@ -21,10 +21,10 @@ describe('HTTP', function() {
 		it('Should response with timeout error', function(done) {
 			var options = {timeout:1000};
 			testSever.selectTest('timeout');
-			trestc.http_get('127.0.0.1',port,'',{},options,function(err,res){
+			trestc.http_get('127.0.0.1',port,'',{},options,function(err,res,statusCode){
 				should.exist(err);
-				err.should.be.a('object');
-				err.code.should.equal(3)
+				should.exist(statusCode);
+				statusCode.should.equal(504)
 				done();
 			});
 		});
@@ -32,10 +32,10 @@ describe('HTTP', function() {
 		// Check response with an error when 
 		it('Should response with a communication error', function(done) {
 			var options = {timeout:360000};
-			trestc.http_get('127.0.0.1',55000,'',{},options,function(err,res){
+			trestc.http_get('127.0.0.1',55000,'',{},options,function(err,res,statusCode){
 				should.exist(err);
-				err.should.be.a('object');
-				err.code.should.equal(2)
+				should.exist(statusCode);
+				statusCode.should.equal(502)
 				done();
 			});
 		});
@@ -43,10 +43,10 @@ describe('HTTP', function() {
 		// Check response with an error when 
 		it('Should response with a http code unknown code', function(done) {
 			var options = {timeout:360000};
-			trestc.http('MELOINVENTO','127.0.0.1',port,'',{},null,options,function(err,res){
+			trestc.http('MELOINVENTO','127.0.0.1',port,'',{},null,options,function(err,res,statusCode){
 				should.exist(err);
-				err.should.be.a('object');
-				err.code.should.equal(5)
+				should.exist(statusCode);
+				statusCode.should.equal(501)
 				done();
 			});
 		});		
@@ -168,10 +168,10 @@ describe('HTTP', function() {
 		it('Should make a inifinite redirect and give an error', function(done) {
 			var options = {timeout:360000,headers:{SOAPAction:'kakadevaka'}};;
 			testSever.selectTest('infiniteredirect');
-			trestc.http_delete('127.0.0.1',port,'/path/redirect/me/forever',null,null,options,function(err,res){
+			trestc.http_delete('127.0.0.1',port,'/path/redirect/me/forever',null,null,options,function(err,res,statusCode){
 				should.exist(err);
-				err.should.be.a('object');
-				err.code.should.equal(4)
+				should.exist(statusCode);
+				statusCode.should.equal(508)
 				done();
 			});
 		});
@@ -180,10 +180,10 @@ describe('HTTP', function() {
 		it('Should redive a redirect wrong without location and return an error', function(done) {
 			var options = {timeout:360000,headers:{SOAPAction:'kakadevaka'}};;
 			testSever.selectTest('infinitewrong');
-			trestc.http_post('127.0.0.1',port,'/path/redirect/me',null,null,options,function(err,res){
+			trestc.http_post('127.0.0.1',port,'/path/redirect/me',null,null,options,function(err,res,statusCode){
 				should.exist(err);
-				err.should.be.a('object');
-				err.code.should.equal(12)
+				should.exist(statusCode);
+				statusCode.should.equal(502);
 				done();
 			});
 		});		
@@ -194,11 +194,10 @@ describe('HTTP', function() {
 		it('Received 404', function(done) {
 			var options = {timeout:360000,headers:{SOAPAction:'kakadevaka'}};;
 			testSever.selectTest('err404');
-			trestc.http_get('127.0.0.1',port,'/path/no/exit',null,options,function(err,res){
+			trestc.http_get('127.0.0.1',port,'/path/no/exit',null,options,function(err,res,statusCode){
 				should.exist(err);
-				err.should.be.a('object');
-				err.code.should.equal(10)
-				err.statusCode.should.equal(404);
+				should.exist(statusCode);
+				statusCode.should.equal(404);
 				done();
 			});
 		});
@@ -207,11 +206,10 @@ describe('HTTP', function() {
 		it('Received 503', function(done) {
 			var options = {timeout:360000,headers:{SOAPAction:'kakadevaka'}};;
 			testSever.selectTest('err503');
-			trestc.http_get('127.0.0.1',port,'/path/no/exit',null,options,function(err,res){
+			trestc.http_get('127.0.0.1',port,'/path/no/exit',null,options,function(err,res,statusCode){
 				should.exist(err);
-				err.should.be.a('object');
-				err.code.should.equal(10)
-				err.statusCode.should.equal(503);
+				should.exist(statusCode);
+				statusCode.should.equal(503)
 				done();
 			});
 		});	
