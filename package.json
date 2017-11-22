@@ -1,6 +1,6 @@
 {
   "name": "trestcjs",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Simple Rest client for node",
   "author": "drobledom",
   "main": "index.js",
@@ -8,7 +8,7 @@
   "dependencies": {
     "iconv-lite": "0.4.19",
     "js2xmlparser": "3.0.0",
-    "xml2js": "0.4.17"
+    "xml2js": "0.4.19"
   },
   "devDependencies": {
     "chai": ""
